@@ -230,7 +230,7 @@ func (p *Pools) Gets(xs []interface{}) int {
 	if gxsl == xsl {
 		return xsl
 	}
-	return p.getSlows(xs[gxsl:])
+	return gxsl + p.getSlows(xs[gxsl:])
 }
 
 func (p *Pools) getSlows(xs []interface{}) int {
