@@ -207,15 +207,207 @@ func TestPoolsStress(t *testing.T) {
 	}
 }
 
-func enchmarkPoolsPutGet(b *testing.B) {
+func BenchmarkPool_Overflow_100(b *testing.B) {
+	var p Pool
+	var v = 1
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			for b := 0; b < 100; b++ {
+				p.Put(&v)
+			}
+			for b := 0; b < 100; b++ {
+				p.Get()
+			}
+		}
+	})
+}
+func BenchmarkPoolsOverflow_100(b *testing.B) {
+	var p Pool
+	var v = 1
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			for b := 0; b < 100; b++ {
+				p.Put(&v)
+			}
+			for b := 0; b < 100; b++ {
+				p.Get()
+			}
+		}
+	})
+}
+
+func benchmarkPoolOverflows(b *testing.B, n int) {
+	defer debug.SetGCPercent(debug.SetGCPercent(-1))
+	switch n {
+	case 0, 1:
+		b.N = 10000000
+	case 2:
+		b.N = 1000000
+	case 4:
+		b.N = 1000000
+	case 8:
+		b.N = 1000000
+	case 16:
+		b.N = 100000
+	case 32:
+		b.N = 100000
+	case 64:
+		b.N = 100000
+	case 128:
+		b.N = 10000
+	case 256:
+		b.N = 10000
+	case 512:
+		b.N = 10000
+	case 1024:
+		b.N = 10000
+	}
+	b.StartTimer()
+	var p Pool
+	var v = 1
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			for i := 0; i < n; i++ {
+				p.Put(&v)
+			}
+			for i := 0; i < n; i++ {
+				p.Get()
+			}
+		}
+	})
+	b.StopTimer()
+	if n > 0 {
+		b.N *= n
+	}
+}
+
+func benchmarkPoolsOverflows(b *testing.B, n int) {
+	defer debug.SetGCPercent(debug.SetGCPercent(-1))
+	switch n {
+	case 0, 1:
+		b.N = 10000000
+	case 2:
+		b.N = 1000000
+	case 4:
+		b.N = 1000000
+	case 8:
+		b.N = 1000000
+	case 16:
+		b.N = 100000
+	case 32:
+		b.N = 100000
+	case 64:
+		b.N = 100000
+	case 128:
+		b.N = 10000
+	case 256:
+		b.N = 10000
+	case 512:
+		b.N = 10000
+	case 1024:
+		b.N = 10000
+	}
+	b.StartTimer()
 	var p Pools
 	var v = 1
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			p.Put(&v)
-			p.Get()
+			for i := 0; i < n; i++ {
+				p.Put(&v)
+			}
+			for i := 0; i < n; i++ {
+				p.Get()
+			}
 		}
 	})
+	b.StopTimer()
+	if n > 0 {
+		b.N *= n
+	}
+}
+
+func BenchmarkPool_Overflows____0(b *testing.B) {
+	benchmarkPoolOverflows(b, 0)
+}
+func BenchmarkPoolsOverflows____0(b *testing.B) {
+	benchmarkPoolsOverflows(b, 0)
+}
+
+func BenchmarkPool_Overflows____1(b *testing.B) {
+	benchmarkPoolOverflows(b, 1)
+}
+func BenchmarkPoolsOverflows____1(b *testing.B) {
+	benchmarkPoolsOverflows(b, 1)
+}
+
+func BenchmarkPool_Overflows____2(b *testing.B) {
+	benchmarkPoolOverflows(b, 2)
+}
+func BenchmarkPoolsOverflows____2(b *testing.B) {
+	benchmarkPoolsOverflows(b, 2)
+}
+
+func BenchmarkPool_Overflows____4(b *testing.B) {
+	benchmarkPoolOverflows(b, 4)
+}
+func BenchmarkPoolsOverflows____4(b *testing.B) {
+	benchmarkPoolsOverflows(b, 4)
+}
+
+func BenchmarkPool_Overflows____8(b *testing.B) {
+	benchmarkPoolOverflows(b, 8)
+}
+func BenchmarkPoolsOverflows____8(b *testing.B) {
+	benchmarkPoolsOverflows(b, 8)
+}
+
+func BenchmarkPool_Overflows___16(b *testing.B) {
+	benchmarkPoolOverflows(b, 16)
+}
+func BenchmarkPoolsOverflows___16(b *testing.B) {
+	benchmarkPoolsOverflows(b, 16)
+}
+
+func BenchmarkPool_Overflows___32(b *testing.B) {
+	benchmarkPoolOverflows(b, 32)
+}
+func BenchmarkPoolsOverflows___32(b *testing.B) {
+	benchmarkPoolsOverflows(b, 32)
+}
+
+func BenchmarkPool_Overflows___64(b *testing.B) {
+	benchmarkPoolOverflows(b, 64)
+}
+func BenchmarkPoolsOverflows___64(b *testing.B) {
+	benchmarkPoolsOverflows(b, 64)
+}
+
+func BenchmarkPool_Overflows__128(b *testing.B) {
+	benchmarkPoolOverflows(b, 128)
+}
+func BenchmarkPoolsOverflows__128(b *testing.B) {
+	benchmarkPoolsOverflows(b, 128)
+}
+
+func BenchmarkPool_Overflows__256(b *testing.B) {
+	benchmarkPoolOverflows(b, 256)
+}
+func BenchmarkPoolsOverflows__256(b *testing.B) {
+	benchmarkPoolsOverflows(b, 256)
+}
+
+func BenchmarkPool_Overflows__512(b *testing.B) {
+	benchmarkPoolOverflows(b, 512)
+}
+func BenchmarkPoolsOverflows__512(b *testing.B) {
+	benchmarkPoolsOverflows(b, 512)
+}
+
+func BenchmarkPool_Overflows_1024(b *testing.B) {
+	benchmarkPoolOverflows(b, 1024)
+}
+func BenchmarkPoolsOverflows_1024(b *testing.B) {
+	benchmarkPoolsOverflows(b, 1024)
 }
 
 func benchmarkPoolsPutGets(b *testing.B, n int) {
@@ -284,92 +476,4 @@ func BenchmarkPoolsPutGets__512(b *testing.B) {
 
 func BenchmarkPoolsPutGets_1024(b *testing.B) {
 	benchmarkPoolsPutGets(b, 10)
-}
-
-func BenchmarkPoolsOverflow(b *testing.B) {
-	var p Pool
-	var v = 1
-	b.RunParallel(func(pb *testing.PB) {
-		for pb.Next() {
-			for b := 0; b < 100; b++ {
-				p.Put(&v)
-			}
-			for b := 0; b < 100; b++ {
-				p.Get()
-			}
-		}
-	})
-}
-
-func benchmarkPoolsOverflows(b *testing.B, n int) {
-	defer debug.SetGCPercent(debug.SetGCPercent(-1))
-	b.StartTimer()
-	var p Pools
-	var v = 1
-	p.New = func() interface{} { return &v }
-	putXs := []interface{}{&v}
-	getXs := []interface{}{nil}
-	for i := 0; i < n; i++ {
-		putXs = append(putXs, putXs...)
-		getXs = append(getXs, getXs...)
-	}
-	b.RunParallel(func(pb *testing.PB) {
-		for pb.Next() {
-			for i := 0; i < 100; i++ {
-				p.Puts(putXs)
-			}
-			for i := 0; i < 100; i++ {
-				n := p.Gets(getXs)
-				if n != len(getXs) {
-					b.Errorf("expect len %d, got %v", len(getXs), n)
-				}
-			}
-		}
-	})
-	b.StopTimer()
-	b.N = b.N * 100
-}
-
-func BenchmarkPoolsOverflows____1(b *testing.B) {
-	benchmarkPoolsOverflows(b, 0)
-}
-
-func BenchmarkPoolsOverflows____2(b *testing.B) {
-	benchmarkPoolsOverflows(b, 1)
-}
-
-func BenchmarkPoolsOverflows____4(b *testing.B) {
-	benchmarkPoolsOverflows(b, 2)
-}
-
-func BenchmarkPoolsOverflows____8(b *testing.B) {
-	benchmarkPoolsOverflows(b, 3)
-}
-
-func BenchmarkPoolsOverflows___16(b *testing.B) {
-	benchmarkPoolsOverflows(b, 4)
-}
-
-func BenchmarkPoolsOverflows___32(b *testing.B) {
-	benchmarkPoolsOverflows(b, 5)
-}
-
-func BenchmarkPoolsOverflows___64(b *testing.B) {
-	benchmarkPoolsOverflows(b, 6)
-}
-
-func BenchmarkPoolsOverflows__128(b *testing.B) {
-	benchmarkPoolsOverflows(b, 7)
-}
-
-func BenchmarkPoolsOverflows__256(b *testing.B) {
-	benchmarkPoolsOverflows(b, 8)
-}
-
-func BenchmarkPoolsOverflows__512(b *testing.B) {
-	benchmarkPoolsOverflows(b, 9)
-}
-
-func BenchmarkPoolsOverflows_1024(b *testing.B) {
-	benchmarkPoolsOverflows(b, 9)
 }
