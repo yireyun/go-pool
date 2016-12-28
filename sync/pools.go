@@ -5,6 +5,7 @@
 package sync
 
 import (
+	"internal/race"
 	"runtime"
 	"sync/atomic"
 	"unsafe"
@@ -65,7 +66,7 @@ type poolsLocal struct {
 
 // Put adds x to the pool.
 func (p *Pools) Put(x interface{}) {
-	if raceenabled {
+	if race.Enabled {
 		// Under race detector the Pools degenerates into no-op.
 		// It's conforming, simple and does not introduce excessive
 		// happens-before edges between unrelated goroutines.
@@ -91,7 +92,7 @@ func (p *Pools) Put(x interface{}) {
 
 // Put adds xs to the pool.
 func (p *Pools) Puts(xs []interface{}) {
-	if raceenabled {
+	if race.Enabled {
 		// Under race detector the Pools degenerates into no-op.
 		// It's conforming, simple and does not introduce excessive
 		// happens-before edges between unrelated goroutines.
@@ -125,7 +126,7 @@ func (p *Pools) Puts(xs []interface{}) {
 // If Get would otherwise return nil and p.New is non-nil, Get returns
 // the result of calling p.New.
 func (p *Pools) Get() interface{} {
-	if raceenabled {
+	if race.Enabled {
 		if p.New != nil {
 			return p.New()
 		}
@@ -191,7 +192,7 @@ func (p *Pools) getSlow() (x interface{}) {
 // the result of calling p.New.
 func (p *Pools) Gets(xs []interface{}) int {
 	xsl := len(xs)
-	if raceenabled {
+	if race.Enabled {
 		if p.New != nil {
 			for i := 0; i < xsl; i++ {
 				xs[i] = p.New()
